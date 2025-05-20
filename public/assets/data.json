@@ -1,0 +1,83 @@
+[
+  {
+    "Name": "Motoyoshi Takamitsu",
+    "Description": "🧐",
+    "URL": "https://photoyoshi.com/",
+    "Type": "Web",
+    "Role": "Design, Develop",
+    "Year": "2025",
+    "Directory": "photoyoshi"
+  },
+  {
+    "Name": "データの分散管理によるこころの自由と価値の共創",
+    "Description": "✔︎",
+    "URL": "https://assemblogue.net/",
+    "Type": "Web, Logo",
+    "Role": "Design, Develop",
+    "Year": "2023",
+    "Directory": "asseblogue"
+  },
+  {
+    "Name": "BLACK STAR LABEL",
+    "Description": "✔︎",
+    "URL": "",
+    "Type": "Logo",
+    "Role": "Design",
+    "Year": "2023",
+    "Directory": "bsl"
+  },
+  {
+    "Name": "Dance with the Issue",
+    "Description": "✔︎",
+    "URL": "https://blackstart.xsrv.jp/",
+    "Type": "Web, Poster, Logo",
+    "Role": "Design, Develop",
+    "Year": "2023",
+    "Directory": "dwi"
+  },
+  {
+    "Name": "Phil-Studio",
+    "Description": "✔︎",
+    "URL": "https://phil-studio.com/",
+    "Type": "Web",
+    "Role": "Develop",
+    "Year": "2024",
+    "Directory": "phi-studio"
+  },
+  {
+    "Name": "Sober Experience studio",
+    "Description": "✔︎",
+    "URL": "https://infinitea.jp/",
+    "Type": "Web",
+    "Role": "Design, Develop",
+    "Year": "2023",
+    "Directory": "sober"
+  },
+  {
+    "Name": "Personal Work - TaiwanNoteBook",
+    "Description": "✔︎",
+    "URL": "",
+    "Type": "Graphics",
+    "Role": "Design, Develop",
+    "Year": "2025",
+    "Directory": "taiwannote"
+  },
+  {
+    "Name": "GardenEight - Card 2024 v1",
+    "Description": "✔︎",
+    "URL": "",
+    "Type": "Card, Illust, Web",
+    "Role": "Design, Develop, Modeling",
+    "Year": "2024",
+    "Directory": "gdn8card2024"
+  },
+  {
+    "Name": "Eco-Pork",
+    "Description": "✔︎",
+    "URL": "https://www.eco-pork.com/",
+    "Type": "Web",
+    "Role": "Design, Develop",
+    "Year": "2023",
+    "Directory": "ecopork"
+  }
+]

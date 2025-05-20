@@ -1,0 +1,28 @@
+@use "../foundation/var.scss" as *;
+
+/*
+
+layout
+
+--------------------------------------------------------------------*/
+.u-in  { width: 100%;}
+.u-body{ padding: calc(var(--grid));}
+.u-df  { display: flex; }
+.u-vh  { height: calc(var(--vh, 1vh)* 100); min-height: calc(var(--vh, 1vh)* 100);}
+
+
+/*
+
+text-align
+
+--------------------------------------------------------------------*/
+.u-t-center{text-align: center;}
+.u-t-right {text-align: right;}
+
+
+
+/*
+
+other
+
+--------------------------------------------------------------------*/

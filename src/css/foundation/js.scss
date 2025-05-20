@@ -1,0 +1,193 @@
+@use "../foundation/setting.scss" as *;
+@use "../foundation/var.scss" as *;
+
+/*--------------------------------------
+
+⚙️ Koala - Guide
+
+--------------------------------------*/
+// :root { --grid: 2.08333333333vw; }
+.guide-s { width: 100vw; height: 100vh; display: flex; justify-content: center; align-items: center; position: fixed; left: 5vw; z-index: 1000; top: 0;  left: 0;  pointer-events: none; color: red;}
+.guide-v { z-index: 10000; pointer-events: none; width: 100vw; height: 100vh; overflow: hidden; position: fixed; top: 0; left: 0; }
+.guide-v-1{ position: absolute; width: calc(100% - var(--grid)*2); height: 100%; display: grid; column-gap: calc(var(--grid)); grid-template-columns: repeat(12, 1fr); margin: 0 calc(var(--grid));}
+.guide-v-1 span{height: 100%; background: #4000ff13;}
+// .guide-v-2{ position: absolute; width: 100%; height: 100%; background-image: repeating-linear-gradient(#3300ff3e 0 1px, transparent 1px 100%), repeating-linear-gradient(90deg, #3300ff3e 0 1px, transparent 1px 100%); background-size: calc(var(--grid)*4); }
+// .guide-v-3{ position: absolute; width: 100%; height: 100%; span:nth-of-type(1){ height: 1px; width: calc(var(--grid)*2); position: absolute; top: 50vh; background: #3300ff3e; margin: 0 auto; left: calc(50% - var(--grid)); } span:nth-of-type(2){ height: 1px; width: 100%; position: absolute; bottom: calc(var(--grid)); background: #3300ff1a; } }
+.guide-v-3 span:nth-of-type(1){ height: 1px; width: calc(var(--grid)*2); position: absolute; top: 50vh; background: #3300ff3e; margin: 0 auto; left: calc(50% - var(--grid)); }
+.guide-v-3 span:nth-of-type(2){ height: 1px; width: 100%; position: absolute; bottom: calc(var(--grid)); background: #3300ff1a; } 
+.guide-v.is-hidden,.guide-s.is-hidden,.guide-v-1.is-hidden,.guide-v-2.is-hidden,.guide-v-3.is-hidden{display: none;}
+ 
+
+/*
+
+⚙️ Koala - Menu (Core)
+
+--------------------------------------------------------------------*/
+.js-menu{ pointer-events: none; position: absolute;}
+.js-menu .js-menu__button{ position: fixed; cursor: pointer; z-index: 10; }
+.js-menu__button{cursor: pointer; z-index: 10; pointer-events: auto;}
+.js-menu__inner { z-index: 8;}
+.js-menu__bg    {position: absolute;z-index: 0; top: 0; left: 0; width: 100%;height: 100%}
+.js-menu__wrap { position: relative; pointer-events: auto;z-index: 5; width: 100%; height: 100%; display: flex; align-items: center;justify-content: center; }
+.js-menu__wrap.is-menu-open   { }
+.js-menu__wrap.is-hidden {  height: 0; opacity: 0;  overflow: hidden; pointer-events: none; padding: 0;} 
+
+
+
+
+/*
+
+⚙️ Koala - Accordion (Core)
+
+--------------------------------------------------------------------*/
+.js-accordion { position: relative;}
+.js-accordion__trigger{cursor: pointer; width: 100%;}
+.js-accordion__content{ width: 100%; display: inline-block;  overflow: hidden;  height: var(--h);  display: block; transition: .3s; will-change: height;}
+.js-accordion .is-open{ /*OPEN style here*/  }
+.js-accordion .is-hidden {  height: 0; opacity: 0;  overflow: hidden; pointer-events: none; padding: 0;} 
+
+
+/*
+
+⚙️ KOALA - ImageLoader (Core)
+--------------------------------------------------------------------*/
+.js-img           { position: absolute; width: 100%; height: 100%; top: 0; left: 0; z-index: 1; opacity: 0; }
+.js-bg            { width: 100%; height: 100%; background: no-repeat; background-size: cover; background-position: center center; }
+.js-img__wrap     { position: relative;  width: 100%; height: 100%;}
+.js-img.is-loaded { opacity: 1;}
+
+/*
+
+🖊️ KOALA - ImageLoader (Design)
+--------------------------------------------------------------------*/
+.img           { width: 30vw; aspect-ratio: 3/4; margin: 10vw auto; }
+.js-img.is-loaded { opacity: 1; transition: opacity 1s; }
+
+
+
+
+
+/*
+
+⚙️ SmoothScroll
+
+--------------------------------------------------------------------*/
+html,body,.l-page,.l-page__body  { min-height: 100%; height: 100%; }
+main       { position: relative;}
+.js-wrapper{ scroll-behavior: auto;}
+.lenis     {
+.lenis-smooth [data-lenis-prevent] {overscroll-behavior: contain;}
+.lenis-stopped {  overflow: hidden;}
+.lenis-scrolling iframe { pointer-events: none;}
+}
+
+
+
+/*
+
+⚙️ PageTransition
+
+--------------------------------------------------------------------*/
+.js-page    { will-change: transform,opacity;}
+.js-wrapper { position: fixed;width: 100vw;height: 100vh;overflow: hidden; clip-path: inset(0 0 0 0 round 0); will-change: transform,clip-path,opacity; overflow-y: scroll;}
+.js-old     { position: absolute; width: 100vw; top: 0; margin:  0 auto;}
+.js-new     { position: absolute; width: 100vw; top: 0; margin:  0 auto;}
+.js-contents{ position: relative;}
+.is-transition{ a {pointer-events: none;}}
+
+
+
+/*
+
+⚙️ Koala - parallax
+
+--------------------------------------------------------------------*/
+.js-p__wrap{overflow: hidden; width: 100%; height: 100%;}
+.js-p__item{will-change: scale,transform,mask-position;backface-visibility: hidden; width: 100%; height: 100%; transform-origin: middle;}
+.js-p__item{transition: .5s ease none;}
+
+
+/*
+
+⚙️ Koala - ScrollChecker(Core)
+
+--------------------------------------------------------------------*/
+.js-visible[data-shown="1"] .txt,
+.js-visible[data-shown="1"] .box,
+.js-visible[data-shown="1"]  { will-change: opacity,transform,width;}
+
+/*Sample*/
+/*可視領域に入ったら一度だけ*/
+/* .js-visible[data-shown="0"]  { opacity: 0; transition: .7s;} */
+/* .js-visible[data-shown="1"]  { opacity: 1; transition: .7s;} */
+
+/*可視領域に入るたびに*/
+.js-visible,.js-visible[data-visible="0"] {opacity: 0; transition: .7s;}
+.js-visible[data-visible="1"] {opacity: 1; transition: .7s;}
+
+/*Delay*/
+.js-visible .txt{ transform: translateX(150px); opacity: 0;}
+.js-visible[data-visible="0"] .txt{ transform: translateX(50px); opacity: 0;}
+.js-visible[data-visible="1"] .txt{ transform: translateY(0px); opacity: 1; transition: .8s ;}
+.of{display: inline-block;overflow: hidden; line-height: 1.0;} .txt{display: inline-block;}
+
+.js-visible__d{ transform: translateY(100%); opacity: 1;}
+// .js-visible[data-visible="0"] .js-visible__d{ transform: translateY(150px); opacity: 1;}
+.js-visible[data-visible="1"] .js-visible__d{ transform: translateY(0px); opacity: 1; transition: transform 1.5s cubic-bezier(0.19, 1, 0.22, 1); }
+.o{display: inline-block;overflow: hidden; line-height: 1.1;} .t{display: inline-block;}
+
+
+/*
+
+⚙️ KOALA - Marquee(Core)
+
+--------------------------------------------------------------------*/
+.js-marquee              { white-space: nowrap; will-change: transform;  position: relative; z-index: 10;cursor: grab; overflow: hidden;}
+.js-marquee__item        { position: absolute;  top: 0; left: 0; display: inline-block; z-index: 10; will-change: transform; pointer-events: none;}
+.js-marquee__inner       { display: flex; align-items: center; pointer-events: none;}
+.js-marquee.is-dragging  { cursor: grabbing;}
+
+
+
+/*
+
+⚙️ Koala - Accordion
+
+--------------------------------------------------------------------*/
+.js-accordion { position: relative;}
+.js-accordion__button{ width: 100%; cursor: pointer;}
+.js-accordion__content{ width: 100%; display: inline-block;  overflow: hidden;  height: var(--h);  display: block; transition: .3s; will-change: height;}
+.js-accordion .is-open{ /*OPEN style here*/  }
+.js-accordion .is-hidden {  height: 0; opacity: 0;  overflow: hidden; pointer-events: none; padding: 0;} 
+
+
+
+/*
+
+⚙️ Koala - CurrentChecker(Design)
+
+--------------------------------------------------------------------*/
+.js-current {
+  &__nav-wrap{display: inline-block; position: fixed; bottom: calc(var(--grid)); left: calc(var(--grid)); background: #111;border-radius: 5px; };
+  &__nav{list-style-type: none; padding: 2px; background: #333; margin: 2px; border-radius: 5px; opacity: 0.5;}
+  &__nav.is-active{ opacity: 1; background: rgb(165, 129, 87);}
+  &__nav:hover{ opacity: 1; background: rgb(165, 129, 87);}
+}
+
+
+
+/*--------------------------------------
+
+⚙️ Koala - HorizonScroll(Core)
+
+--------------------------------------*/
+.js-hr{position: relative;  }
+.js-hr__wrap{position: sticky; display: flex; flex-wrap: nowrap; overflow-x: auto; top: 0;}
+.js-hr__item{display: flex;}
+/*--------------------------------------
+
+⚙️ Koala - HorizonScroll(Design)
+
+--------------------------------------*/
+.js-hr__item{min-width:60vw;height: 100vh; display: flex; align-items: center; justify-content: center; font-size: 10vw; border: 1px dashed #ffffff3d;}
+.js-hr__wrap{font-size: 2vw;}

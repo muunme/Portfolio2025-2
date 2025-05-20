@@ -1,0 +1,27 @@
+/*
+
+Setting  
+
+--------------------------------------------------------------------*/
+@use "sass:math";
+@use "sass:meta";
+@use "sass:map";
+@function strip-unit($number)   { @if meta.type-of($number) == "number" and not math.is-unitless($number) { @return math.div($number, $number * 0 + 1);} @return $number;}
+@function rem($px, $base: 16px) { $value: $px;@if (meta.type-of($px) != "number" or not math.is-unitless(strip-unit($px))) {@warn "rem()の引数にpx以外の値を指定しても計算できません";@return $value;}$value: math.div(strip-unit($px), strip-unit($base)) * 1rem;@return $value;}
+@function vw($px, $vw: 1440)    { $value: $px;@if (meta.type-of($px) != "number" or not math.is-unitless(strip-unit($px))) { @warn "vw()の引数にpx以外の値を指定しても計算できません"; @return $value;}$value: math.div(1, strip-unit($vw)) * 100 * strip-unit($px) * 1vw; @return $value;}
+
+/*
+
+responsive
+
+--------------------------------------------------------------------*/
+$breakpoints: (
+'mobile'      : 'screen and (max-width:680px)',
+'tablet'      : 'screen and (max-width:1023px)',
+'tablet-large': 'screen and (max-width:1280px)',
+'desktop'     : 'screen and (min-width:1921px)',
+);
+@mixin bp($breakpoint: desktop) {@media #{map.get($breakpoints, $breakpoint)} {@content;}}
+.show-t,
+.show-m { display: none !important;}
+.hide-m { display: inline-block;}

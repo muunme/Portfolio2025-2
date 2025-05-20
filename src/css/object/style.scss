@@ -1,0 +1,42 @@
+@use "../foundation/var.scss" as *;
+
+/*
+
+HTML
+
+--------------------------------------------------------------------*/
+html {  width: 100%;  height: 100%;  font-size: 62.5%;}
+body {  width: 100%; position: relative;  overflow-x: hidden;  scroll-behavior: smooth;  overscroll-behavior-y: none; /*自動行間制御*/  -webkit-font-smoothing: antialiased; /*アンチエイリアス*/  overscroll-behavior: none;  margin: 0;  padding: 0;  overflow-x: hidden;  }
+html { scroll-behavior: initial; }
+
+/*
+
+Font
+
+--------------------------------------------------------------------*/
+html{
+    font-family: neue-haas-grotesk-display, sans-serif;
+    font-weight: 500;
+    font-style: normal;
+}
+.--serif {
+    font-family: "PPEditorialOld";
+    font-size: 10vw;
+}
+
+
+/*
+
+z-index
+
+--------------------------------------------------------------------*/
+.js-menu{z-index: 600;}
+.l-header{z-index: 500;}
+.js-current__nav-wrap{z-index: 550;}
+
+
+/*
+
+Hover
+
+--------------------------------------------------------------------*/

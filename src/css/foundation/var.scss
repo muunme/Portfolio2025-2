@@ -1,0 +1,44 @@
+@use "../foundation/setting.scss" as *;
+
+/*
+
+Color  
+
+--------------------------------------------------------------------*/
+// $PikkasGreen: #3FAF37;
+
+
+/*
+
+Space
+
+--------------------------------------------------------------------*/
+:root { --grid: 2.08333333333vw; }
+.spr {
+  width: 100%;
+  &-g05 { height: calc(var(--grid)*0.5); }
+  &-g03 { height: calc(var(--grid)/3); }
+  &-g   { height: calc(var(--grid)*1); }
+  &-g15 { height: calc(var(--grid)*1.5); }
+  &-g2  { height: calc(var(--grid)*2); }
+  &-g3  { height: calc(var(--grid)*3); }
+  &-g4  { height: calc(var(--grid)*4); }
+  &-g5  { height: calc(var(--grid)*5); }
+  &-g6  { height: calc(var(--grid)*6); }
+}
+
+/*
+
+Font
+
+--------------------------------------------------------------------*/
+.fs{
+    &-xxl{ font-size: vw(18); line-height: 1.0; &.-w5{font-weight: 500;} &.-w6{font-weight: 600;} .u-serif{letter-spacing: 0.1em;}}
+    // &-xxl.--r{ font-size: vw(75); line-height: 1.0; &.-w5{font-weight: 500;} &.-w6{font-weight: 600;} .u-serif{letter-spacing: 0.1em;}}
+    &-xl { font-size: vw(50); line-height: 1.1;  letter-spacing: 0.00em;  &.-w5{font-weight: 500;}  &.-w6{font-weight: 600;}  &.--en{letter-spacing: 0;}}
+    &-l  { font-size: vw(24); line-height: 1.3;  letter-spacing: 0.02em; &.-w5{font-weight: 500;} &.--en{letter-spacing: 0;}}
+    &-m  { font-size: vw(16px); line-height: 1.2;  letter-spacing: -0.02em; }
+    &-s  { font-size: calc(12px + .15vw); line-height: 1.0; letter-spacing: 0.001em; &.-w5{font-weight: 500;}  &.-w6{font-weight: 600;} &.--en{letter-spacing: 0.002em;}} //14
+    &-xs { font-size: calc(10px + .15vw); line-height: 1.35; &.-w5{font-weight: 500;} &.-w6{font-weight: 600;}}    
+}
+

@@ -1,0 +1,1 @@
+/Volumes/disk-2024/2.Develop/4.KoalaModules/koala-parallax/src/js/koala-parallax.js

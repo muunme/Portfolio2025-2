@@ -1,0 +1,31 @@
+{
+  "name": "rsbuildTemplate",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "NODE_ENV=development rsbuild dev --open",
+    "dev-build": "NODE_ENV=development rsbuild build --mode development",
+    "prod-build": "NODE_ENV=production rsbuild build",
+    "prod-preview": "NODE_ENV=production rsbuild preview",
+    "cmsUpdate": "node scripts/fetch-and-save.js && node scripts/generate-html.js",
+    "serverBuild": "npm run cmsUpdate && rsbuild build"
+  },
+  "devDependencies": {
+    "@rsbuild/core": "^1.2.8",
+    "@rsbuild/plugin-sass": "^1.2.2",
+    "ejs": "^3.1.10",
+    "fs-extra": "^11.3.0",
+    "node-fetch": "^3.3.2",
+    "rsbuild-plugin-glsl": "^1.0.1"
+  },
+  "dependencies": {
+    "@barba/core": "^2.10.3",
+    "@barba/prefetch": "^2.2.0",
+    "current-device": "^0.10.2",
+    "gsap": "file:src/js/_librarys/gsap-bonus.tgz",
+    "lenis": "^1.1.21",
+    "three": "^0.176.0",
+    "tweakpane": "^4.0.5"
+  }
+}

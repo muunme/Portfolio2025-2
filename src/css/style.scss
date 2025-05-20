@@ -1,0 +1,50 @@
+
+/*
+
+foundation
+
+--------------------------------------------------------------------*/
+@use './foundation/reset.scss';
+@use './foundation/setting.scss' as *;  
+@use './foundation/var.scss'     as *;
+@use './foundation/js.scss';
+@use './foundation/guide.scss';
+
+
+/*
+
+object
+
+--------------------------------------------------------------------*/
+@use './object/style.scss';
+@use './object/layout.scss';
+@use './object/utility.scss'; 
+@use './object/component.scss';
+@use './object/projects.scss';
+
+
+/*
+
+pages
+
+--------------------------------------------------------------------*/
+@use './pages/home.scss';  
+
+
+/*
+
+device
+
+--------------------------------------------------------------------*/
+@use './device/large-pc.scss';
+@use './device/tablet.scss';
+@use './device/mobile.scss';
+
+
+
+/*
+
+Import
+
+--------------------------------------------------------------------*/
+@import url("https://use.typekit.net/yjc8rrx.css");

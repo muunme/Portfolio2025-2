@@ -1,0 +1,25 @@
+@use "../foundation/setting.scss" as *;
+
+
+
+
+
+/*--------------------------------------
+
+    Mobile | 
+    - 680px
+
+--------------------------------------*/
+
+@include bp(mobile) {  
+
+    .js-lang__btn-item { padding: 15px; }
+    html,.l-page__body,.l-page,.js-page,
+    .js-wrapper{overflow-x: hidden; overscroll-behavior-y: none; }
+    .home__profile p {width: 100%;}
+    .js-work-image img{height: 100vh; width: auto;}
+    .js-work-image video{height: 100vh; width: auto;}
+    .js-work-nav__inner > *{width: 4vw;}
+    .js-work-nav__inner span{width: 6vw;}
+    // .js-work-nav{position: fixed; right: calc(var(--grid));  left: auto;}
+}
