@@ -9,8 +9,6 @@ import singleFragment from './shader/singleFragment.glsl';
 
 import allVertex from './shader/allVertex.glsl';
 import allFragment from './shader/allFragment.glsl';
-import { log } from 'three/src/nodes/TSL.js';
-
 export default class KoalaThreeImage {
   constructor(opts) {
     this.syncItems = []; // ← ここに移動すべき！
@@ -28,8 +26,11 @@ export default class KoalaThreeImage {
 
     //ココから
     this.createImage();
+    this.createDrawPanel();
     this.effects();
-   
+
+
+
     //追加
     this.handleWheel = this.handleWheel.bind(this);
     window.addEventListener('wheel', this.handleWheel);
@@ -51,7 +52,7 @@ export default class KoalaThreeImage {
     this.res = Math.min(window.devicePixelRatio, 2);
     this.scene = new THREE.Scene();
     this.canvas = document.createElement('canvas');
-    this.data.querySelector('.js-canvas__wrap').appendChild(this.canvas);
+    document.querySelector('.js-canvas__wrap').appendChild(this.canvas);
     this.renderer = new THREE.WebGLRenderer({ canvas: this.canvas, antialias: false, alpha: true });
     this.renderer.setClearColor(0xffffff, 0);
     this.renderer.setPixelRatio(this.res);
@@ -75,10 +76,80 @@ export default class KoalaThreeImage {
     this.raycaster = new THREE.Raycaster();
     this.mouse = new THREE.Vector2();
   }
+  createDrawPanel() {
+    this.mousePoints = [];
+    this.maxPoints = 50;
+
+    const geometry = new THREE.BufferGeometry();
+    const positions = new Float32Array(this.maxPoints * 3);
+    geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+
+    // const material = new THREE.LineBasicMaterial({ color: 0x000000, transparent: true, opacity: 0.5 });
+    const material = new THREE.ShaderMaterial({
+      transparent: true,
+      depthWrite: false,
+      uniforms: {
+        u_color: { value: new THREE.Color(0xffffff) },
+      },
+      vertexShader: `
+        varying vec2 vUv;
+        void main() {
+          vUv = uv;
+          gl_PointSize = 20.0; // ドットサイズ
+          gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        }
+      `,
+      fragmentShader: `
+        varying vec2 vUv;
+        uniform vec3 u_color;
+        void main() {
+          vec2 coord = gl_PointCoord - 0.5;
+          float d = length(coord);
+          float border = 0.4;  // ドーナツの外半径
+          float hole = 0.2;    // ドーナツの中心くり抜き
+          if (d < hole || d > border) discard;
+          gl_FragColor = vec4(u_color, 1.0);
+        }
+      `,
+    });
+    this.drawLine = new THREE.Points(geometry, material);
+    // this.drawLine = new THREE.Line(geometry, material);
+    
+    this.scene.add(this.drawLine);
+
+    this.mouse = new THREE.Vector2();
+    window.addEventListener('mousemove', (event) => {
+      const x = (event.clientX / window.innerWidth) * 2 - 1;
+      const y = -(event.clientY / window.innerHeight) * 2 + 1;
+      this.mouse.set(x, y);
+
+      // Convert NDC to screen space for Ortho camera
+      const now = performance.now();
+      if (now - this.lastAddTime < _w/50) return; // ← 30ms 間隔（数値を大きくすれば間隔が広くなる）
+      this.lastAddTime = now;
+
+      const px = event.clientX - window.innerWidth / 2;
+      const py = -(event.clientY - window.innerHeight / 2);
+      this.mousePoints.push(new THREE.Vector3(px, py, 1));
+
+      if (this.mousePoints.length > this.maxPoints) {
+        this.mousePoints.shift();
+      }
+
+      const positions = this.drawLine.geometry.attributes.position.array;
+      for (let i = 0; i < this.mousePoints.length; i++) {
+        positions[i * 3] = this.mousePoints[i].x;
+        positions[i * 3 + 1] = this.mousePoints[i].y;
+        positions[i * 3 + 2] = this.mousePoints[i].z;
+      }
+      this.drawLine.geometry.setDrawRange(0, this.mousePoints.length);
+      this.drawLine.geometry.attributes.position.needsUpdate = true;
+    });
+  }
   createImage() {
     const loader = new THREE.TextureLoader();
     this.glImages = Array.from(this.data.querySelectorAll('.gl-i'));
-
+    if (this.glImages.length === 0) return;
     this.glImages.forEach((img, index) => {
       const rect = img.getBoundingClientRect();
       const texture = loader.load(img.src);
@@ -113,8 +184,6 @@ export default class KoalaThreeImage {
   }
   effects() {
     // return
-    // const textureLoader = new THREE.TextureLoader();
-    // const birdMaskTexture = textureLoader.load('/assets/img/_w.png');
     this.composer = new EffectComposer(this.renderer);
     this.renderPass = new RenderPass(this.scene, this.o_camera);
     this.composer.addPass(this.renderPass);
@@ -134,14 +203,12 @@ export default class KoalaThreeImage {
     this.composer.addPass(this.allShader);
   }
   tick() {
-    
     this.renderer.setRenderTarget(null);
     this.renderer.render(this.scene, this.o_camera);
     if (!this.time) this.time = 0;
     this.time += 0.001;
     if (this.composer) this.composer.render();
     if (this.allShader.uniforms.u_time) this.allShader.uniforms.u_time.value = this.time;
-    
 
     this.syncItems.forEach(({ mesh, img, material }) => {
       const rect = img.getBoundingClientRect();

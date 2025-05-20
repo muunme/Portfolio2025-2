@@ -1,6 +1,6 @@
-import { destroy } from './initClass';
-import { init }    from './initClass';
-import { APP }     from './initClass';
+import { destroy } from './init';
+import { init }    from './init';
+import { APP }     from './init';
 
 export function enterAnimation(oldContainer, newContainer, done, data) {
   //set

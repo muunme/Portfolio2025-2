@@ -3,10 +3,10 @@
 PageTransition
 
 --------------------------------------------------------------------*/
-import { APP } from '../initClass';
-import { init } from '../initClass';
-import { once } from '../initClass';
-import { destroy } from '../initClass';
+import { APP } from '../init';
+import { initAPP } from '../init';
+import { initOnce } from '../init';
+import { onDestroy } from '../init';
 import { enterAnimation } from '../animaton';
 
 export default class PageTransition {
@@ -37,8 +37,8 @@ export default class PageTransition {
             _this.pageInfo(data);
             _this.sameLink(data);
             setTimeout(() => {
-              once(data);
-              init(data);
+              initOnce(data);
+              initAPP(data);
             }, 50);
           },
           /*--------------------------------------
@@ -69,8 +69,8 @@ export default class PageTransition {
             const newContainerName = data.next.namespace;
             // _this.pageInfo(data);
             // _this.sameLink(data);
-            destroy(data);
-            init(data);
+            onDestroy(data);
+            initAPP(data);
           },
           async enter(data) {
             console.log('%c PAGE %c %c Enter %c', 'color:white; background-color:#de9e1d; padding:0px 1px; margin:2px; border-radius:100vw;', '', 'color:#91e5ff;', '');
