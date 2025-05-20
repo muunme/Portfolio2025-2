@@ -5,13 +5,16 @@
 page
 
 --------------------------------------------------------------------*/
-
+html{background: #eee;}
 /*
 
 Header
 
 --------------------------------------------------------------------*/
-
+header{
+    position: fixed; top: calc(var(--grid)); width: 100vw; padding: 0 calc(var(--grid)); z-index: 100;
+    ul{display: flex;justify-content: space-between;}
+}
 /*
 
 Menu

@@ -16,7 +16,8 @@ import KoalaHorizonScroll  from './class/koala-horizon-scroll';  // Template ✔
 import PageTransition      from './class/transition';
 import SmoothScroller      from './class/smooth-scroll';
 import KoalaThree          from './class/koala-three.js';
-import { Pane } from 'tweakpane';
+import KoalaPanels         from './class/koala-panels.js';
+
 
 
 const APP = {
@@ -29,7 +30,8 @@ const APP = {
   koalaVisibleChecker: new KoalaVisibleChecker({ target: '.js-visible', delayItem: '.js-visible__d', delayMode: true, delayTime: 0.05, first: true }),
   koalaCurrentChecker: new KoalaCurrentChecker({ mode: 'nav', /*"default" "nav" "header"*/ targetWrap: '.js-current', targetItem: '.js-current__item', nav: '.js-current__nav', triggerItem: 'js-current__trigger', scrollY: () => _scroll, /*window.pageYOffset or 任意 */ checkFn: null, }),
   koalaHorizonScroll : new KoalaHorizonScroll({ scrollWrap: '.js-wrapper', target: '.js-hr', wrap: '.js-hr__wrap', item: '.js-hr__item' }),
-  koalaThree         : new KoalaThree()
+  koalaThree         : new KoalaThree(),
+  koalaPanel         : new KoalaPanels()
 };
 
 export function initGlobals(data) {
@@ -44,35 +46,11 @@ export function initGlobals(data) {
 export function initOnce(data) {
   APP.koalaMarquee.app = APP;
   APP.koalaMarquee.setApp(APP);
-  APP.koalaGuide.onInit();
-
-      /*
-
-  panel
-
-  --------------------------------------------------------------------*/
-
-  // const PARAMS = {
-  //   bg: '#f5f5f5', // 初期値はCSSと合わせる
-  //   font: '#8ab884', // 初期値はCSSと合わせる
-  //   fontA: '#ffffff', // 初期値はCSSと合わせる
-  //   box: '#ffffff', // 初期値はCSSと合わせる
-  // };
-
-  // const pane = new Pane();
-  // pane.addBinding(PARAMS, 'bg', { label: 'Main Color' }).on('change', (ev) => {
-  //   document.documentElement.style.setProperty('--bg', ev.value);
-  // });
-  // pane.addBinding(PARAMS, 'font', { label: 'font Color' }).on('change', (ev) => {
-  //   document.documentElement.style.setProperty('--font', ev.value);
-  // });
-  // pane.addBinding(PARAMS, 'box', { label: 'box Color' }).on('change', (ev) => {
-  //   document.documentElement.style.setProperty('--box', ev.value);
-  // });
-  // pane.addBinding(PARAMS, 'fontA', { label: 'fontA' }).on('change', (ev) => {
-  //   document.documentElement.style.setProperty('--fontA', ev.value);
-  // });
-
+  APP.koalaGuide.onInit()
+  APP.koalaPanel.onInit();
+  setTimeout(() => {
+    APP.koalaThree.onInit(data.next.container);
+  }, 100);
 }
 export function initAPP(data) {
   APP.koalaHorizonScroll.onInit(data.next.container);
@@ -82,7 +60,7 @@ export function initAPP(data) {
   APP.koalaCurrentChecker.onInit(data.next.container);
   APP.koalaParallax.onInit(data.next.container);
   setTimeout(() => {
-    APP.koalaThree.onInit(data.next.container);
+    // APP.koalaThree.onInit(data.next.container);
     APP.koalaImageLoader.onInit(data.next.container);
   }, 100);
 }
@@ -110,7 +88,7 @@ export function onResize(data) {
 export function onDestroy(data) {
   APP.koalaHorizonScroll.onDestroy();
   APP.koalaVisibleChecker.onDestroy();
-  APP.koalaMarquee.onDestroy();
+  // APP.koalaMarquee.onDestroy();
   APP.smoothScroller.onDestroy()
 }
 export function onScroll(e) {

@@ -1,19 +1,19 @@
+import { APP } from '../init';
 import * as THREE from 'three';
 
 //Effect
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
 import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js';
+import drawVertex from './shader/drawVertex.glsl';
+import drawFragment from './shader/drawFragment.glsl';
 import singleVertex from './shader/singleVertex.glsl';
 import singleFragment from './shader/singleFragment.glsl';
-
 import allVertex from './shader/allVertex.glsl';
 import allFragment from './shader/allFragment.glsl';
+
 export default class KoalaThreeImage {
-  constructor(opts) {
-    this.syncItems = []; // ← ここに移動すべき！
-    this.wheelPow = 0;
-  }
+  constructor(opts) {}
   onInit(data) {
     this.width = window.innerWidth;
     this.height = window.innerHeight;
@@ -24,26 +24,15 @@ export default class KoalaThreeImage {
     this.data = data || document;
     this.onSet(this.data);
 
-    //ココから
-    this.createImage();
+    //ここから
     this.createDrawPanel();
+    this.updatePanels(); // Register panel callbacks here
     this.effects();
-
-
-
-    //追加
-    this.handleWheel = this.handleWheel.bind(this);
-    window.addEventListener('wheel', this.handleWheel);
 
     //RUN
     this.loop = this.tick.bind(this);
     gsap.ticker.add(this.loop);
     window.addEventListener('resize', this.onResize);
-  }
-  handleWheel(e) {
-    const delta = e.deltaY || e.wheelDeltaY || -e.wheelDelta;
-    const direction = delta > 0 ? -1 : 1;
-    this.wheelPow = direction - delta;
   }
   onSet(data) {
     this.data = data || document;
@@ -68,118 +57,105 @@ export default class KoalaThreeImage {
     this.o_camera = new THREE.OrthographicCamera((-this.height * this.aspect) / 2, (this.height * this.aspect) / 2, this.height / 2, -this.height / 2, -this.height / 2, this.height / 2);
     this.o_camera.position.z = 1;
   }
-
   initGlobals() {
     this.pm = 1;
     window._w = window.innerWidth;
     window._h = window.innerHeight;
-    this.raycaster = new THREE.Raycaster();
     this.mouse = new THREE.Vector2();
   }
   createDrawPanel() {
     this.mousePoints = [];
     this.maxPoints = 50;
+    this.limit = 50;
+    this.space = _w / 50;
 
     const geometry = new THREE.BufferGeometry();
     const positions = new Float32Array(this.maxPoints * 3);
     geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    // geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
 
-    // const material = new THREE.LineBasicMaterial({ color: 0x000000, transparent: true, opacity: 0.5 });
+    //ランダム
+    const patternList = [0, 6, 10, 11, 18, 19];
+    const patternIds = new Float32Array(this.maxPoints); // 各点にパターンIDを割り当てる用
+    geometry.setAttribute('patternId', new THREE.BufferAttribute(patternIds, 1));
+
+    
     const material = new THREE.ShaderMaterial({
       transparent: true,
       depthWrite: false,
       uniforms: {
         u_color: { value: new THREE.Color(0xffffff) },
+        u_size: { value: 20 },
+        u_patternId: { value: 0 }, // intとして扱えるように！
       },
-      vertexShader: `
-        varying vec2 vUv;
-        void main() {
-          vUv = uv;
-          gl_PointSize = 20.0; // ドットサイズ
-          gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-        }
-      `,
-      fragmentShader: `
-        varying vec2 vUv;
-        uniform vec3 u_color;
-        void main() {
-          vec2 coord = gl_PointCoord - 0.5;
-          float d = length(coord);
-          float border = 0.4;  // ドーナツの外半径
-          float hole = 0.2;    // ドーナツの中心くり抜き
-          if (d < hole || d > border) discard;
-          gl_FragColor = vec4(u_color, 1.0);
-        }
-      `,
+      vertexShader: drawVertex,
+      fragmentShader: drawFragment,
     });
     this.drawLine = new THREE.Points(geometry, material);
-    // this.drawLine = new THREE.Line(geometry, material);
-    
     this.scene.add(this.drawLine);
-
     this.mouse = new THREE.Vector2();
     window.addEventListener('mousemove', (event) => {
       const x = (event.clientX / window.innerWidth) * 2 - 1;
       const y = -(event.clientY / window.innerHeight) * 2 + 1;
       this.mouse.set(x, y);
-
-      // Convert NDC to screen space for Ortho camera
       const now = performance.now();
-      if (now - this.lastAddTime < _w/50) return; // ← 30ms 間隔（数値を大きくすれば間隔が広くなる）
+      if (now - this.lastAddTime < this.space) return;
       this.lastAddTime = now;
 
       const px = event.clientX - window.innerWidth / 2;
       const py = -(event.clientY - window.innerHeight / 2);
       this.mousePoints.push(new THREE.Vector3(px, py, 1));
 
-      if (this.mousePoints.length > this.maxPoints) {
+      if (this.mousePoints.length > this.limit) {
         this.mousePoints.shift();
       }
 
       const positions = this.drawLine.geometry.attributes.position.array;
+
+      // for (let i = 0; i < this.mousePoints.length; i++) {
+      //   // positions[i * 3] = this.mousePoints[i].x;
+      //   // positions[i * 3 + 1] = this.mousePoints[i].y;
+      //   // positions[i * 3 + 2] = this.mousePoints[i].z;
+
+      //   geometry.attributes.patternId.needsUpdate = true;
+      // }
+      //ランダム
       for (let i = 0; i < this.mousePoints.length; i++) {
         positions[i * 3] = this.mousePoints[i].x;
         positions[i * 3 + 1] = this.mousePoints[i].y;
         positions[i * 3 + 2] = this.mousePoints[i].z;
+
+        // パターンIDをランダムに割り当て
+        patternIds[i] = patternList[Math.floor(Math.random() * patternList.length)];
       }
+      geometry.attributes.patternId.needsUpdate = true;
       this.drawLine.geometry.setDrawRange(0, this.mousePoints.length);
       this.drawLine.geometry.attributes.position.needsUpdate = true;
     });
   }
-  createImage() {
-    const loader = new THREE.TextureLoader();
-    this.glImages = Array.from(this.data.querySelectorAll('.gl-i'));
-    if (this.glImages.length === 0) return;
-    this.glImages.forEach((img, index) => {
-      const rect = img.getBoundingClientRect();
-      const texture = loader.load(img.src);
-      const opacity = parseFloat(getComputedStyle(img).opacity) || 1;
-      const geometry = new THREE.PlaneGeometry(img.clientWidth, img.clientHeight);
-      const material = new THREE.ShaderMaterial({
-        transparent: true,
-        depthWrite: false, // ← これ追加
-        uniforms: {
-          wheelPow: { value: 0 },
-          u_texture: { value: texture },
-          u_opacity: { value: opacity },
-          u_resolution: { value: new THREE.Vector2(rect.width, rect.height) },
-          u_time: { value: 0.0 },
-          // u_position: { value: new THREE.Vector2(rect.left + rect.width / 2, rect.top + rect.height / 2) },
-        },
-        vertexShader: singleVertex,
-        fragmentShader: singleFragment,
-      });
+  updatePanels() {
+    APP.koalaPanel.setParamCallback('dotSize', (size) => {
+      this.drawLine.material.uniforms.u_size.value = size;
+    });
+    // APP.koalaPanel.setParamCallback('pattern', (size) => {
+    //   this.drawLine.material.uniforms.u_patternId.value = size;
+    //   console.log(size);
+      
+    // });
+    APP.koalaPanel.setParamCallback('maxPoints', (size) => {
+      this.limit = size;
 
-      const mesh = new THREE.Mesh(geometry, material);
+      const newPositions = new Float32Array(this.limit * 3);
+      this.drawLine.geometry.setAttribute('position', new THREE.BufferAttribute(newPositions, 3));
+      this.drawLine.geometry.attributes.position.needsUpdate = true;
 
-      // DOM位置 → Three.js座標へ（画面中央基準）
-      mesh.position.x = rect.left + img.clientWidth / 2 - window.innerWidth / 2;
-      mesh.position.y = -(rect.top + img.clientHeight / 2 - window.innerHeight / 2);
-      mesh.position.z = 1 - index;
-
-      this.scene.add(mesh);
-
-      this.syncItems.push({ mesh, img, material });
+      // mousePoints の最大長も変更（古い点が残るのを防ぐ）
+      if (this.mousePoints.length > this.limit) {
+        this.mousePoints = this.mousePoints.slice(-this.limit);
+      }
+    });
+    APP.koalaPanel.setParamCallback('space', (size) => {
+      this.space = size;
     });
   }
   effects() {
@@ -187,7 +163,6 @@ export default class KoalaThreeImage {
     this.composer = new EffectComposer(this.renderer);
     this.renderPass = new RenderPass(this.scene, this.o_camera);
     this.composer.addPass(this.renderPass);
-
     this.allShader = new ShaderPass(
       new THREE.ShaderMaterial({
         uniforms: {
@@ -209,27 +184,10 @@ export default class KoalaThreeImage {
     this.time += 0.001;
     if (this.composer) this.composer.render();
     if (this.allShader.uniforms.u_time) this.allShader.uniforms.u_time.value = this.time;
-
-    this.syncItems.forEach(({ mesh, img, material }) => {
-      const rect = img.getBoundingClientRect();
-      mesh.position.x = rect.left + rect.width / 2 - window.innerWidth / 2;
-      mesh.position.y = -(rect.top + rect.height / 2 - window.innerHeight / 2);
-      // mesh.rotation.y = this.time*5
-      if (material.uniforms.u_time) {
-        material.uniforms.u_time.value = this.time;
-        if (material.uniforms.wheelPow) {
-          material.uniforms.wheelPow.value = this.wheelPow;
-        }
-      }
-      const opacity = parseFloat(getComputedStyle(img).opacity) || 1;
-      if (material.uniforms.u_opacity) {
-        material.uniforms.u_opacity.value = opacity;
-      }
-    });
   }
 
   /*--------------------------------------
-    RUN
+    RUN STOP DESTROY
   --------------------------------------*/
   onResize = () => {
     console.log('%c Event %c %c onResize %c  %c KoalaAccordion %c', 'color:white; background-color:#439160; padding:0px 1px; margin:2px; border-radius:100vw;', '', 'color:#439160; border:1px solid #439160; padding:0px 1px;  border-radius:4px;', '', 'color:#91e5ff;', '');
@@ -260,42 +218,6 @@ export default class KoalaThreeImage {
     this.tickStopFlag = true;
   }
   onDestroy() {
-    gsap.ticker.remove(this.loop);
-    window.removeEventListener('resize', this.onResize);
-
-    // Dispose of all syncItems
-    this.syncItems.forEach(({ mesh, material }) => {
-      if (mesh) {
-        this.scene.remove(mesh);
-        mesh.geometry.dispose();
-      }
-      if (material) {
-        for (const key in material.uniforms) {
-          if (material.uniforms[key].value instanceof THREE.Texture) {
-            material.uniforms[key].value.dispose();
-          }
-        }
-        material.dispose();
-      }
-    });
-
-    this.syncItems = [];
-
-    // Dispose of the renderer and canvas
-    if (this.renderer) {
-      this.renderer.dispose();
-    }
-    if (this.canvas && this.canvas.parentNode) {
-      this.canvas.parentNode.removeChild(this.canvas);
-    }
-
-    // Dispose postprocessing composer
-    if (this.composer) {
-      this.composer.passes.forEach((pass) => {
-        if (pass.dispose) pass.dispose();
-      });
-      this.composer = null;
-    }
     console.log('%c DES %c %c KoalaThree %c', 'color:white; background-color:#2a3354; padding:0px 1px; margin:2px; border-radius:100vw;', '', 'color:#91e5ff;', '');
   }
 }

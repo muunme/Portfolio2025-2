@@ -1,3 +1,14 @@
 @use "../foundation/var.scss" as *;
 @use "../foundation/setting.scss" as *;
 
+.l-home{
+    &__mv{width: 100vw; height: 100vh; background: #eee;}
+    .l-grid{display: grid; column-gap: calc(var(--grid)); grid-template-columns: repeat(12, 1fr); margin: 0 calc(var(--grid));}
+    .l-grid{
+        .g1{grid-column: 1/5}
+        .g2{grid-column: 6/10}
+        .g3{grid-column: 11/13}
+        .g4{grid-column: 5/13; aspect-ratio: 3/4;}
+
+    }
+}
